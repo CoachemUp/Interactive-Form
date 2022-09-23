@@ -69,7 +69,11 @@ activities.addEventListener('change', (e) => {
     activitiesCost.innerHTML = 'Total: $' + totalPrice;
 });
 
+/************************
+ * Payment info Section
+ ***********************/
 
+//Variables 
 
 
 
