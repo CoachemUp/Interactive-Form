@@ -61,9 +61,9 @@ activities.addEventListener('change', (e) => {
     let cost = e.target.getAttribute('data-cost');
     let totalCost = +cost;
     if (e.target.checked) {
-        totalPrice += totalCost
+        totalPrice += totalCost;
     } else {
-        totalPrice -= totalCost
+        totalPrice -= totalCost;
     }
     //adding a running cost to html
     activitiesCost.innerHTML = 'Total: $' + totalPrice;
@@ -74,6 +74,34 @@ activities.addEventListener('change', (e) => {
  ***********************/
 
 //Variables 
+let payWith = document.getElementById('payment');
+let creditCard = document.getElementById('credit-card');
+let payPal = document.getElementById('paypal');
+let bitCoin = document.getElementById('bitcoin');
+//hide non credit card 
+payPal.style.display = 'none';
+bitCoin.style.display = 'none';
+//credit card is auto selected in payment info
+payWith.children.item(1).setAttribute('selected', 'select');
+//eventlistener to show payment selected and hide others
+payWith.addEventListener('change', (e) => {
+    if (e.target.value === 'paypal') {
+        creditCard.style.display = 'none';
+        bitCoin.style.display = 'none';
+        payPal.style.display = 'block';
+    } else {
+        creditCard.style.display = 'block';
+        bitCoin.style.display = 'none';
+        payPal.style.display = 'none';
+    }
+    if (e.target.value === 'bitcoin') {
+        creditCard.style.display = 'none';
+        payPal.style.display = 'none';
+        bitCoin.style.display = 'block';
+    }
+});
+/************************
+ *     Form Validation
+ ***********************/
 
-
-
+//Variables 
