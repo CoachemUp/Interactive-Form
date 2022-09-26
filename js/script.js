@@ -128,12 +128,14 @@ const showError = (input) => {
     const formField = input.parentElement;
     formField.classList.remove('valid');
     formField.classList.add('not-valid');
+
 };
 //show valid when fields are  valid
 const showValid = (input) => {
     const formField = input.parentElement;
     formField.classList.remove('not-valid');
     formField.classList.add('valid');
+
 };
 /***********************************
  * Validating each required fields
@@ -188,7 +190,7 @@ const checkActivities = () => {
 };
 
 //validate cc if chosen to paywith
-const validCard = /(?:\d[ -]*?){13,16}/gm;
+const validCard = /(?:\d[ -]*?){13,16}/;
 function checkCard() {
     let valid = false;
     let userCard = cardNumber.value;
@@ -250,7 +252,7 @@ checkBox.forEach(function (i) {
 
 
 form.addEventListener('submit', (e) => {
-   
+
     let isNameValid = checkName(),
         isEmailValid = checkEmail(),
         isActivitiesValid = checkActivities(),
