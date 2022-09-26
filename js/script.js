@@ -112,12 +112,11 @@ let zipCode = document.getElementById("zip");
 let cvv = document.getElementById("cvv");
 let form = document.querySelector("form");
 
-//helper functions
+/************************
+ *     HELPER FUNCTIONS
+ ***********************/
 //required function
 const required = (value) => (value === "" ? false : true);
-//credit card length of number function
-const length = (length, min, max) =>
-    length < min || length > max ? false : true;
 //email valid format function
 const validEmail = (email) => {
     const re =
@@ -127,24 +126,23 @@ const validEmail = (email) => {
 //show error when fields are not valid
 const showError = (input) => {
     const formField = input.parentElement;
-   // formField.classList.remove("valid");
-    formField.classList.add("not-valid");
+    formField.classList.remove('valid');
+    formField.classList.add('not-valid');
 };
 //show valid when fields are  valid
 const showValid = (input) => {
     const formField = input.parentElement;
-   // formField.classList.remove("not-valid");
-    formField.classList.add("valid");
+    formField.classList.remove('not-valid');
+    formField.classList.add('valid');
 };
-/**
- * *********************************
+/***********************************
  * Validating each required fields
  **********************************/
 //validating the name field
 const checkName = () => {
     let valid = false;
     let name = userName.value.trim();
-    let nameInput = name.value;
+    let nameInput = userName.value;
     let fullName = /^[a-zA-Z]+ [a-zA-Z]+$/;
     if (!required(name)) {
         showError(userName);
@@ -154,16 +152,118 @@ const checkName = () => {
             showError(userName);
         } else {
             showValid(userName);
+            document.getElementById("name-hint").style.display = "none";
             valid = true;
         }
     return valid;
 };
+//validating the email field
+const checkEmail = () => {
+    let valid = false;
+    let email = userEmail.value.trim();
+    if (!validEmail(email)) {
+        showError(userEmail);
+        document.getElementById('email-hint').style.display = 'block';
+    } else {
+        showValid(userEmail);
+        document.getElementById('email-hint').style.display = 'none';
+        valid = true;
+    }
+    return valid;
+};
 
-form.addEventListener("submit", (e) => {
+//validating that at least one activity is selected
+const checkActivities = () => {
+    let valid = false;
+    let totalActivities = totalPrice;
+    if (totalActivities > 0) {
+        showValid(activities);
+        document.getElementById('activities-hint').style.display = 'none';
+        valid = true;
+    } else {
+        showError(activities);
+        document.getElementById('activities-hint').style.display = 'block';
+    }
+    return valid;
+};
+
+//validate cc if chosen to paywith
+const validCard = /(?:\d[ -]*?){13,16}/gm;
+function checkCard() {
+    let valid = false;
+    let userCard = cardNumber.value;
+    if (!validCard.test(userCard)) {
+        showError(cardNumber);
+        document.getElementById('cc-hint').style.display = 'block';
+    } else {
+        showValid(cardNumber);
+        document.getElementById('cc-hint').style.display = 'none';
+        valid = true;
+    }
+    return valid;
+};
+//validate zip code - must contain 5 digits
+const validZip = /^\d{5}$/;
+function checkZip() {
+    let valid = false;
+    let userZip = zipCode.value;
+    if (!validZip.test(userZip)) {
+        showError(zipCode);
+        document.getElementById('zip-hint').style.display = 'block';
+    } else {
+        showValid(zipCode);
+        document.getElementById('zip-hint').style.display = 'none';
+        valid = true;
+    }
+    return valid;
+};
+//validate CVV - must contain 3 digits
+const validCvv = /^\d{3}$/;
+function checkCvv() {
+    let valid = false;
+    let userCvv = cvv.value;
+    if (!validCvv.test(userCvv)) {
+        showError(cvv);
+        document.getElementById('cvv-hint').style.display = 'block';
+    } else {
+        showValid(cvv);
+        document.getElementById('cvv-hint').style.display = 'none';
+        valid = true;
+    }
+    return valid;
+};
+
+/****************************************
+ * setting up Accessibility to document *
+ ***************************************/
+//Focus and Blur to activities section
+const checkBox = document.querySelectorAll('#activities-box input[type="checkbox"]');
+checkBox.forEach(function (i) {
+    i.addEventListener('focus', function () {
+        i.parentElement.classList.add('focus');
+    });
+    i.addEventListener('blur', function () {
+        i.parentElement.classList.remove('focus');
+    });
+});
+
+
+
+form.addEventListener('submit', (e) => {
     e.preventDefault();
-    let isNameValid = checkName();
+    let isNameValid = checkName(),
+        isEmailValid = checkEmail(),
+        isActivitiesValid = checkActivities(),
+        isCardNumberValid = checkCard(),
+        isZipValid = checkZip(),
+        isCvvValid = checkCvv();
 
-    let isFormValid = isNameValid;
+    let isFormValid = isNameValid &&
+        isEmailValid &&
+        isActivitiesValid &&
+        isCardNumberValid &&
+        isZipValid &&
+        isCvvValid;
 
     if (isFormValid) {
     }
