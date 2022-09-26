@@ -250,7 +250,7 @@ checkBox.forEach(function (i) {
 
 
 form.addEventListener('submit', (e) => {
-    e.preventDefault();
+   
     let isNameValid = checkName(),
         isEmailValid = checkEmail(),
         isActivitiesValid = checkActivities(),
@@ -266,5 +266,8 @@ form.addEventListener('submit', (e) => {
         isCvvValid;
 
     if (isFormValid) {
+        return true;
+    } else {
+        e.preventDefault();
     }
 });
