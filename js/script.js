@@ -37,13 +37,13 @@ shirtColor.disabled = true;
 //enabling the color option and displaying the proper color
 design.addEventListener("change", (e) => {
     shirtColor.disabled = false;
-    for (i = 0; i < colorOption.length; i++) {
-        let value = e.target.value;
-        let colorValue = colorOption[i].getAttribute("data-theme");
-        if (value === colorValue) {
+    for (let i = 0; i < colorOption.length; i++) {
+        if (e.target.value === colorOption[i].getAttribute("data-theme")) {
             colorOption[i].hidden = false;
+            colorOption[i].setAttribute("selected", true);
         } else {
             colorOption[i].hidden = true;
+            colorOption[i].removeAttribute("selected");
         }
     }
 });
@@ -53,9 +53,10 @@ design.addEventListener("change", (e) => {
  *************************************/
 
 //Variables
-let activities = document.getElementById("activities");
-let activitiesCost = document.getElementById("activities-cost");
+const activities = document.getElementById("activities-box");
+const activitiesCost = document.getElementById("activities-cost");
 let totalPrice = 0;
+const events = document.querySelectorAll("input[type=checkbox]");
 //adding or subtracting the cost of each activity
 activities.addEventListener("change", (e) => {
     let cost = e.target.getAttribute("data-cost");
@@ -65,6 +66,23 @@ activities.addEventListener("change", (e) => {
     } else {
         totalPrice -= totalCost;
     }
+    //checking for activities with same day and time and disables if a selected matches
+    for (let i = 0; i < events.length; i++)
+        if (
+            e.target.getAttribute("data-day-and-time") ===
+            events[i].getAttribute("data-day-and-time") &&
+            e.target.checked === true
+        ) {
+            events[i].disabled = true;
+            e.target.disabled = false;
+        } else
+            if (
+                e.target.getAttribute("data-day-and-time") ===
+                events[i].getAttribute("data-day-and-time") &&
+                e.target.checked === false
+            ) {
+                events[i].disabled = false;
+            }
     //adding a running cost to html
     activitiesCost.innerHTML = "Total: $" + totalPrice;
 });
@@ -126,16 +144,14 @@ const validEmail = (email) => {
 //show error when fields are not valid
 const showError = (input) => {
     const formField = input.parentElement;
-    formField.classList.remove('valid');
-    formField.classList.add('not-valid');
-
+    formField.classList.remove("valid");
+    formField.classList.add("not-valid");
 };
 //show valid when fields are  valid
 const showValid = (input) => {
     const formField = input.parentElement;
-    formField.classList.remove('not-valid');
-    formField.classList.add('valid');
-
+    formField.classList.remove("not-valid");
+    formField.classList.add("valid");
 };
 /***********************************
  * Validating each required fields
@@ -149,14 +165,13 @@ const checkName = () => {
     if (!required(name)) {
         showError(userName);
         document.getElementById("name-hint").style.display = "block";
-    } else
-        if (!fullName.test(nameInput)) {
-            showError(userName);
-        } else {
-            showValid(userName);
-            document.getElementById("name-hint").style.display = "none";
-            valid = true;
-        }
+    } else if (!fullName.test(nameInput)) {
+        showError(userName);
+    } else {
+        showValid(userName);
+        document.getElementById("name-hint").style.display = "none";
+        valid = true;
+    }
     return valid;
 };
 //validating the email field
@@ -165,10 +180,10 @@ const checkEmail = () => {
     let email = userEmail.value.trim();
     if (!validEmail(email)) {
         showError(userEmail);
-        document.getElementById('email-hint').style.display = 'block';
+        document.getElementById("email-hint").style.display = "block";
     } else {
         showValid(userEmail);
-        document.getElementById('email-hint').style.display = 'none';
+        document.getElementById("email-hint").style.display = "none";
         valid = true;
     }
     return valid;
@@ -180,11 +195,11 @@ const checkActivities = () => {
     let totalActivities = totalPrice;
     if (totalActivities > 0) {
         showValid(activities);
-        document.getElementById('activities-hint').style.display = 'none';
+        document.getElementById("activities-hint").style.display = "none";
         valid = true;
     } else {
         showError(activities);
-        document.getElementById('activities-hint').style.display = 'block';
+        document.getElementById("activities-hint").style.display = "block";
     }
     return valid;
 };
@@ -196,14 +211,14 @@ function checkCard() {
     let userCard = cardNumber.value;
     if (!validCard.test(userCard)) {
         showError(cardNumber);
-        document.getElementById('cc-hint').style.display = 'block';
+        document.getElementById("cc-hint").style.display = "block";
     } else {
         showValid(cardNumber);
-        document.getElementById('cc-hint').style.display = 'none';
+        document.getElementById("cc-hint").style.display = "none";
         valid = true;
     }
     return valid;
-};
+}
 //validate zip code - must contain 5 digits
 const validZip = /^\d{5}$/;
 function checkZip() {
@@ -211,14 +226,14 @@ function checkZip() {
     let userZip = zipCode.value;
     if (!validZip.test(userZip)) {
         showError(zipCode);
-        document.getElementById('zip-hint').style.display = 'block';
+        document.getElementById("zip-hint").style.display = "block";
     } else {
         showValid(zipCode);
-        document.getElementById('zip-hint').style.display = 'none';
+        document.getElementById("zip-hint").style.display = "none";
         valid = true;
     }
     return valid;
-};
+}
 //validate CVV - must contain 3 digits
 const validCvv = /^\d{3}$/;
 function checkCvv() {
@@ -226,33 +241,34 @@ function checkCvv() {
     let userCvv = cvv.value;
     if (!validCvv.test(userCvv)) {
         showError(cvv);
-        document.getElementById('cvv-hint').style.display = 'block';
+        document.getElementById("cvv-hint").style.display = "block";
     } else {
         showValid(cvv);
-        document.getElementById('cvv-hint').style.display = 'none';
+        document.getElementById("cvv-hint").style.display = "none";
         valid = true;
     }
     return valid;
-};
+}
 
 /****************************************
  * setting up Accessibility to document *
  ***************************************/
 //Focus and Blur to activities section
-const checkBox = document.querySelectorAll('#activities-box input[type="checkbox"]');
+const checkBox = document.querySelectorAll(
+    '#activities-box input[type="checkbox"]'
+);
 checkBox.forEach(function (i) {
-    i.addEventListener('focus', function () {
-        i.parentElement.classList.add('focus');
+    i.addEventListener("focus", function () {
+        i.parentElement.classList.add("focus");
     });
-    i.addEventListener('blur', function () {
-        i.parentElement.classList.remove('focus');
+    i.addEventListener("blur", function () {
+        i.parentElement.classList.remove("focus");
     });
 });
-
-
-
-form.addEventListener('submit', (e) => {
-
+/****************************************
+ * Validating form before submit *
+ ***************************************/
+form.addEventListener("submit", (e) => {
     let isNameValid = checkName(),
         isEmailValid = checkEmail(),
         isActivitiesValid = checkActivities(),
@@ -260,7 +276,8 @@ form.addEventListener('submit', (e) => {
         isZipValid = checkZip(),
         isCvvValid = checkCvv();
 
-    let isFormValid = isNameValid &&
+    let isFormValid =
+        isNameValid &&
         isEmailValid &&
         isActivitiesValid &&
         isCardNumberValid &&
@@ -273,3 +290,7 @@ form.addEventListener('submit', (e) => {
         e.preventDefault();
     }
 });
+
+/****************************************
+ * Real time validation *
+ ***************************************/
